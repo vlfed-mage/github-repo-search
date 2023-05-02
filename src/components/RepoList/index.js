@@ -1,12 +1,13 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import RepoItem from '../RepoItem';
+import { selectRepositories, selectStatus, selectError } from '../../redux/repositories/selectors';
 import { RepoListContainer, Processing } from './RepoList.styles';
 
 const RepoList = () => {
-    const repositories = useSelector(state => state.repositories.repositories);
-    const status = useSelector(state => state.repositories.status);
-    const error = useSelector(state => state.repositories.error);
+    const repositories = useSelector(selectRepositories);
+    const status = useSelector(selectStatus);
+    const error = useSelector(selectError);
 
     if (status === 'loading') {
         return <Processing>Loading...</Processing>;

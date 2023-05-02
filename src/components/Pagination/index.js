@@ -1,35 +1,34 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { setCurrentPage, fetchRepositories } from '../../redux/repositories/repositoriesSlice';
+import React, { useCallback } from 'react';
+import { useSelector } from 'react-redux';
 import { Container, Button, PageNumber } from './Pagination.styles';
+import { selectTotalPages, selectStatus } from '../../redux/repositories/selectors';
 
-const Pagination = () => {
-    const dispatch = useDispatch();
-    const totalPages = useSelector(state => state.repositories.totalPages);
-    const currentPage = useSelector(state => state.repositories.currentPage);
-    const searchQuery = useSelector(state => state.repositories.searchQuery);
-    const status = useSelector(state => state.repositories.status);
+const Pagination = ({ currentPage, setCurrentPage }) => {
+    const totalPages = useSelector(selectTotalPages);
+    const status = useSelector(selectStatus);
 
-    const handlePageChange = page => {
-        if (page !== currentPage) {
-            dispatch(setCurrentPage(page));
-            dispatch(fetchRepositories(`${searchQuery}&page=${page}`));
-        }
-    };
+    const handlePageChange = useCallback(
+        (page) => {
+            if (page !== currentPage) {
+                setCurrentPage(page);
+            }
+        },
+        [currentPage, setCurrentPage]
+    );
 
-    const handlePrevPage = () => {
+    const handlePrevPage = useCallback(() => {
         if (currentPage > 1) {
             handlePageChange(currentPage - 1);
         }
-    };
+    }, [currentPage, handlePageChange]);
 
-    const handleNextPage = () => {
+    const handleNextPage = useCallback(() => {
         if (currentPage < totalPages) {
             handlePageChange(currentPage + 1);
         }
-    };
+    }, [currentPage, totalPages, handlePageChange]);
 
-    const renderPageNumbers = () => {
+    const renderPageNumbers = useCallback(() => {
         const pageNumbers = [];
         for (let i = 1; i <= totalPages; i++) {
             pageNumbers.push(
@@ -39,7 +38,7 @@ const Pagination = () => {
             );
         }
         return pageNumbers;
-    };
+    }, [currentPage, totalPages, handlePageChange]);
 
     return status === 'succeeded' ? (
         <Container>
