@@ -3,39 +3,29 @@ import axios from 'axios';
 
 const initialState = {
     repositories: null,
-    currentPage: 1,
     totalPages: 0,
-    searchQuery: 'react',
     status: 'loading',
     error: null,
 };
 
 export const fetchRepositories = createAsyncThunk(
     'repositories/fetchRepositories',
-    async (query, { getState, rejectWithValue }) => {
-        const { currentPage } = getState().repositories;
+    async ({ searchQuery, page }, { rejectWithValue }) => {
         try {
             const response = await axios.get(
-                `https://api.github.com/search/repositories?q=${query}&per_page=3&page=${currentPage}`
+                `https://api.github.com/search/repositories?q=${searchQuery}&per_page=3&page=${page}`,
             );
             return response.data;
         } catch (err) {
             return rejectWithValue(err.response.data);
         }
-    }
+    },
 );
 
 const repositoriesSlice = createSlice({
     name: 'repositories',
     initialState,
-    reducers: {
-        setCurrentPage: (state, action) => {
-            state.currentPage = action.payload;
-        },
-        setSearchQuery: (state, action) => {
-            state.searchQuery = action.payload;
-        },
-    },
+    reducers: {},
     extraReducers: builder => {
         builder
             .addCase(fetchRepositories.pending, state => {
