@@ -43,6 +43,4 @@ const repositoriesSlice = createSlice({
     },
 });
 
-export const { setCurrentPage, setSearchQuery } = repositoriesSlice.actions;
-
 export default repositoriesSlice.reducer;
